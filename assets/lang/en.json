@@ -1,0 +1,21 @@
+{
+  "english": "English",
+  "hindi": "Hindi",
+  "name": "Name*",
+  "email": "Email*",
+  "mobile": "Mobile Number*",
+  "password": "Password*",
+  "confirmPassword": "Confirm Password*",
+  "signIn": "SIGN IN",
+  "signUp": "SIGN UP",
+  "pen": "Please Enter Name",
+  "pem": "Please Enter Valid Mobile Number",
+  "pee": "Please Enter Valid Email",
+  "pep": "Please Enter Valid Password",
+  "pecp": "Please Enter Valid confirm Password",
+  "dNotHaveAccount": "Does not have an account?",
+  "aHaveAccount": "Already have an account?",
+
+  "light": "Light Theme",
+  "dark": "Dark Theme"
+}
