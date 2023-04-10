@@ -1,42 +1,66 @@
 import 'package:equatable/equatable.dart';
 
-class MobileAuthenticationEntity extends Equatable {
-  List<DataEntity>? data;
+class LoginEntity extends Equatable {
+  int? status;
+  String? message;
+  DataEntity? data;
 
-  MobileAuthenticationEntity({this.data});
+  LoginEntity({this.status, this.message, this.data});
 
   @override
-  // TODO: implement props
-  List<Object?> get props => [data];
+  List<Object?> get props => [status, message, data];
 }
 
 class DataEntity extends Equatable {
-  int? userCode;
-  String? message;
+  int? id;
+  String? firstname;
+  String? lastname;
+  String? mobile;
+  String? password;
+  String? aadhar;
+  String? license;
+  String? address;
+  String? city;
+  String? state;
+  String? pin;
   int? status;
-  String? oTPMessage;
-  int? sendMessage;
-  String? mobileNumber;
-  String? userType;
+  String? rememberToken;
+  String? createdAt;
+  String? updatedAt;
 
   DataEntity(
-      {this.userCode,
-      this.message,
+      {this.id,
+      this.firstname,
+      this.lastname,
+      this.mobile,
+      this.password,
+      this.aadhar,
+      this.license,
+      this.address,
+      this.city,
+      this.state,
+      this.pin,
       this.status,
-      this.oTPMessage,
-      this.sendMessage,
-      this.mobileNumber,
-      this.userType});
+      this.rememberToken,
+      this.createdAt,
+      this.updatedAt});
 
   @override
-  // TODO: implement props
   List<Object?> get props => [
-        userCode,
-        message,
+        id,
+        firstname,
+        lastname,
+        mobile,
+        password,
+        aadhar,
+        license,
+        address,
+        city,
+        state,
+        pin,
         status,
-        oTPMessage,
-        sendMessage,
-        mobileNumber,
-        userType
+        rememberToken,
+        createdAt,
+        updatedAt
       ];
 }

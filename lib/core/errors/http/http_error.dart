@@ -5,7 +5,7 @@ import 'package:bloc_clean/core/errors/base/time_out_error.dart';
 import 'package:bloc_clean/core/errors/base/api_error.dart';
 import 'package:bloc_clean/core/errors/domain_error.dart';
 
-abstract class HttpError extends Failure {
+abstract class HttpError extends DomainError implements Exception{
   const HttpError._({String message = ''}) : super(message: message);
 
   factory HttpError.badRequest({String message = ''}) =>
@@ -60,7 +60,7 @@ class _ServerError extends HttpError {
 
 extension ConvertToBaseError on HttpError {
   /// Convert HttpError to BaseError equivalent
-  Failure convertError() {
+  DomainError convertError() {
     switch (runtimeType) {
       case _BadRequest:
         return InvalidDataError(message: message);

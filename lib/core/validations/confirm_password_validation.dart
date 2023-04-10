@@ -1,12 +1,8 @@
-//validate password
-import 'package:flutter/material.dart';
 import 'package:formz/formz.dart';
 
-//return invalid if password does not match with expression
-enum ConfirmPasswordValidationError { invalid, mismatch }
+enum NameError { invalid, mismatch }
 
-class ConfirmPassword
-    extends FormzInput<String, ConfirmPasswordValidationError> {
+class ConfirmPassword extends FormzInput<String, NameError> {
   final String? password;
 
   const ConfirmPassword.pure({this.password = ''}) : super.pure('');
@@ -15,19 +11,21 @@ class ConfirmPassword
       : super.dirty(value);
 
   @override
-  ConfirmPasswordValidationError? validator(String value) {
-    if (value.isEmpty) {
-      return ConfirmPasswordValidationError.invalid;
-    }
-    return password == value ? null : ConfirmPasswordValidationError.mismatch;
+  NameError? validator(String value) {
+    print("state.password.value: $password $value");
+    return value.isEmpty
+        ? null
+        : password == value
+            ? null
+            : NameError.invalid;
   }
 }
 
-extension Explanation on ConfirmPasswordValidationError {
+extension Explanation on NameError {
   String? get name {
     switch (this) {
-      case ConfirmPasswordValidationError.mismatch:
-        return 'passwords must match';
+      case NameError.invalid:
+        return 'Passwords not match';
       default:
         return null;
     }

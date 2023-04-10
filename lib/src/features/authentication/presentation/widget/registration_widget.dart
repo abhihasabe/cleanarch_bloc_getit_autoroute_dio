@@ -1,5 +1,8 @@
 import 'package:bloc_clean/core/localization/app_localization.dart';
 import 'package:bloc_clean/core/manager/app_router_manager.gr.dart';
+import 'package:bloc_clean/src/features/authentication/presentation/bloc/authentication_bloc.dart';
+import 'package:bloc_clean/src/features/authentication/presentation/bloc/authentication_event.dart';
+import 'package:bloc_clean/src/features/authentication/presentation/bloc/authentication_state.dart';
 import 'package:bloc_clean/src/widgets/input_field_widget.dart';
 import 'package:bloc_clean/src/widgets/button_widget.dart';
 import 'package:bloc_clean/src/widgets/logo_widget.dart';
@@ -8,9 +11,11 @@ import 'package:bloc_clean/core/theme/app_colors.dart';
 import 'package:bloc_clean/core/theme/app_dimens.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RegistrationWidget extends StatefulWidget {
-  const RegistrationWidget({Key? key}) : super(key: key);
+  const RegistrationWidget({Key? key, required this.state}) : super(key: key);
+  final AuthenticationState state;
 
   @override
   State<RegistrationWidget> createState() => _RegistrationWidgetState();
@@ -21,7 +26,8 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _mobileController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   dynamic appTheme;
 
   bool get isPopulated =>
@@ -89,155 +95,163 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
               borderRadius: BorderRadius.circular(12.0),
             ),
             child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  buildTitleWidget(),
-                  const SizedBox(height: dimension20),
-                  InputTextFormFieldWidget(
-                    key: const Key("nameKey"),
-                    maxLine: one,
-                    controller: _nameController,
-                    hintText: AppLocalization.of(context)?.translate('name'),
-                    textCapitalization: TextCapitalization.sentences,
-                    textInputType: TextInputType.emailAddress,
-                    actionKeyboard: TextInputAction.next,
-                    prefixIcon: const Icon(
-                      Icons.email,
-                      color: hoverColorDarkColor,
-                    ),
-                    /*errorMessage: state.email.invalid
-                                ? AppLocalization.of(context)?.translate('peveid')
-                                : null,*/
-                    onChange: (name) =>
-                    name /*context.read<LoginCubit>().emailChanged(name)*/,
-                    parametersValidate:
-                    AppLocalization.of(context)?.translate('pen'),
+                padding: const EdgeInsets.all(12.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      buildTitleWidget(),
+                      const SizedBox(height: dimension20),
+                      InputTextFormFieldWidget(
+                        key: const Key("nameKey"),
+                        maxLine: one,
+                        controller: _nameController,
+                        hintText:
+                            AppLocalization.of(context)?.translate('name'),
+                        textCapitalization: TextCapitalization.sentences,
+                        textInputType: TextInputType.emailAddress,
+                        actionKeyboard: TextInputAction.next,
+                        prefixIcon: const Icon(
+                          Icons.account_circle_sharp,
+                          color: hoverColorDarkColor,
+                        ),
+                        errorMessage: widget.state.username.isNotValid
+                            ? AppLocalization.of(context)?.translate('pen')
+                            : null,
+                        onChange: (name) => context
+                            .read<AuthenticationBloc>()
+                            .add(UsernameChanged(username: name)),
+                        parametersValidate:
+                            AppLocalization.of(context)?.translate('pen'),
+                      ),
+                      const SizedBox(height: dimension12),
+                      InputTextFormFieldWidget(
+                        key: const Key("mobileKey"),
+                        controller: _mobileController,
+                        hintText:
+                            AppLocalization.of(context)?.translate('mobile'),
+                        textCapitalization: TextCapitalization.sentences,
+                        textInputType: TextInputType.number,
+                        actionKeyboard: TextInputAction.next,
+                        maxLine: one,
+                        prefixIcon: const Icon(Icons.phone_android,
+                            color: hoverColorDarkColor),
+                        errorMessage: widget.state.phoneNo.isNotValid
+                            ? AppLocalization.of(context)?.translate('pem')
+                            : null,
+                        onChange: (mobileNo) => context
+                            .read<AuthenticationBloc>()
+                            .add(PhoneNoChanged(phoneNo: mobileNo)),
+                        parametersValidate:
+                            AppLocalization.of(context)?.translate('pem'),
+                      ),
+                      const SizedBox(height: dimension12),
+                      InputTextFormFieldWidget(
+                        key: const Key("emailKey"),
+                        controller: _emailController,
+                        hintText:
+                            AppLocalization.of(context)?.translate('email'),
+                        textCapitalization: TextCapitalization.sentences,
+                        textInputType: TextInputType.emailAddress,
+                        actionKeyboard: TextInputAction.next,
+                        maxLine: one,
+                        prefixIcon:
+                            const Icon(Icons.email, color: hoverColorDarkColor),
+                        errorMessage: widget.state.email.isNotValid
+                            ? AppLocalization.of(context)?.translate('pee')
+                            : null,
+                        onChange: (email) => context
+                            .read<AuthenticationBloc>()
+                            .add(EmailChanged(email: email)),
+                        parametersValidate:
+                            AppLocalization.of(context)?.translate('pee'),
+                      ),
+                      const SizedBox(height: dimension12),
+                      InputTextFormFieldWidget(
+                        key: const Key("passwordKey"),
+                        controller: _passwordController,
+                        hintText:
+                            AppLocalization.of(context)?.translate('password'),
+                        textCapitalization: TextCapitalization.sentences,
+                        textInputType: TextInputType.text,
+                        actionKeyboard: TextInputAction.next,
+                        obscureText: true,
+                        showSuffixIcon: true,
+                        maxLine: one,
+                        suffixIcon: const Icon(Icons.visibility,
+                            color: hoverColorDarkColor),
+                        prefixIcon:
+                            const Icon(Icons.lock, color: hoverColorDarkColor),
+                        errorMessage: widget.state.password.isNotValid
+                            ? AppLocalization.of(context)?.translate('pep')
+                            : null,
+                        onChange: (password) => context
+                            .read<AuthenticationBloc>()
+                            .add(PasswordChanged(password: password)),
+                        parametersValidate:
+                            AppLocalization.of(context)?.translate('pep'),
+                      ),
+                      const SizedBox(height: dimension12),
+                      InputTextFormFieldWidget(
+                        key: const Key("confirmPasswordKey"),
+                        controller: _confirmPasswordController,
+                        hintText: AppLocalization.of(context)
+                            ?.translate('confirmPassword'),
+                        textCapitalization: TextCapitalization.sentences,
+                        textInputType: TextInputType.text,
+                        actionKeyboard: TextInputAction.done,
+                        obscureText: true,
+                        showSuffixIcon: true,
+                        maxLine: one,
+                        suffixIcon: const Icon(Icons.visibility,
+                            color: hoverColorDarkColor),
+                        prefixIcon:
+                            const Icon(Icons.lock, color: hoverColorDarkColor),
+                        errorMessage: widget.state.confirmPassword.isNotValid
+                            ? AppLocalization.of(context)?.translate('pecp')
+                            : null,
+                        onChange: (confirmPassword) => context
+                            .read<AuthenticationBloc>()
+                            .add(ConfirmPasswordChanged(
+                                confirmPassword: confirmPassword)),
+                        parametersValidate:
+                            AppLocalization.of(context)?.translate('pecp'),
+                      ),
+                      const SizedBox(height: dimension25),
+                      ElevatedButtonWidget(
+                        key: const Key("buttonKey"),
+                        width: double.infinity,
+                        title: AppLocalization.of(context)?.translate('signIn'),
+                        height: dimension42,
+                        bTitleBold: true,
+                        onClick: isPopulated
+                            ? () {
+                                context.replaceRoute(const Login());
+                              }
+                            : null,
+                        bgColor: (appTheme == Brightness.dark)
+                            ? buttonBgColor
+                            : buttonDarkBgColor,
+                        textColor: (appTheme == Brightness.dark)
+                            ? buttonDarkTextColor
+                            : buttonTextColor,
+                        disabledBgColor: (appTheme == Brightness.dark)
+                            ? disabledDarkBgColor
+                            : disabledBgColor,
+                        disabledTextColor: (appTheme == Brightness.dark)
+                            ? disabledTextDarkColor
+                            : disabledTextColor,
+                        bTitleS: true,
+                        borderRadius: dimension5,
+                      ),
+                      const SizedBox(
+                        height: dimension10,
+                      ),
+                      buildSignUpText()
+                    ],
                   ),
-                  const SizedBox(height: dimension12),
-                  InputTextFormFieldWidget(
-                    key: const Key("mobileKey"),
-                    controller: _mobileController,
-                    hintText:
-                    AppLocalization.of(context)?.translate('mobile'),
-                    textCapitalization: TextCapitalization.sentences,
-                    textInputType: TextInputType.number,
-                    actionKeyboard: TextInputAction.next,
-                    maxLine: one,
-                    prefixIcon:
-                    const Icon(Icons.lock, color: hoverColorDarkColor),
-                    /*errorMessage: state.password.invalid
-                                ? AppLocalization.of(context)?.translate('pepass')
-                                : null,*/
-                    onChange: (name) =>
-                    name /*context.read<LoginCubit>().passwordChanged(name)*/,
-                    parametersValidate:
-                    AppLocalization.of(context)?.translate('pem'),
-                  ),
-                  const SizedBox(height: dimension12),
-                  InputTextFormFieldWidget(
-                    key: const Key("emailKey"),
-                    controller: _emailController,
-                    hintText:
-                    AppLocalization.of(context)?.translate('email'),
-                    textCapitalization: TextCapitalization.sentences,
-                    textInputType: TextInputType.emailAddress,
-                    actionKeyboard: TextInputAction.next,
-                    maxLine: one,
-                    prefixIcon:
-                    const Icon(Icons.lock, color: hoverColorDarkColor),
-                    /*errorMessage: state.password.invalid
-                                ? AppLocalization.of(context)?.translate('pepass')
-                                : null,*/
-                    onChange: (name) =>
-                    name /*context.read<LoginCubit>().passwordChanged(name)*/,
-                    parametersValidate:
-                    AppLocalization.of(context)?.translate('pee'),
-                  ),
-                  const SizedBox(height: dimension12),
-                  InputTextFormFieldWidget(
-                    key: const Key("passwordKey"),
-                    controller: _passwordController,
-                    hintText:
-                    AppLocalization.of(context)?.translate('password'),
-                    textCapitalization: TextCapitalization.sentences,
-                    textInputType: TextInputType.text,
-                    actionKeyboard: TextInputAction.next,
-                    obscureText: true,
-                    showSuffixIcon: true,
-                    maxLine: one,
-                    suffixIcon: const Icon(Icons.visibility,
-                        color: hoverColorDarkColor),
-                    prefixIcon:
-                    const Icon(Icons.lock, color: hoverColorDarkColor),
-                    /*errorMessage: state.password.invalid
-                                ? AppLocalization.of(context)?.translate('pepass')
-                                : null,*/
-                    onChange: (name) =>
-                    name /*context.read<LoginCubit>().passwordChanged(name)*/,
-                    parametersValidate:
-                    AppLocalization.of(context)?.translate('pep'),
-                  ),
-                  const SizedBox(height: dimension12),
-                  InputTextFormFieldWidget(
-                    key: const Key("confirmPasswordKey"),
-                    controller: _confirmPasswordController,
-                    hintText:
-                    AppLocalization.of(context)?.translate('confirmPassword'),
-                    textCapitalization: TextCapitalization.sentences,
-                    textInputType: TextInputType.text,
-                    actionKeyboard: TextInputAction.done,
-                    obscureText: true,
-                    showSuffixIcon: true,
-                    maxLine: one,
-                    suffixIcon: const Icon(Icons.visibility,
-                        color: hoverColorDarkColor),
-                    prefixIcon:
-                    const Icon(Icons.lock, color: hoverColorDarkColor),
-                    /*errorMessage: state.password.invalid
-                                ? AppLocalization.of(context)?.translate('pepass')
-                                : null,*/
-                    onChange: (name) =>
-                    name /*context.read<LoginCubit>().passwordChanged(name)*/,
-                    parametersValidate:
-                    AppLocalization.of(context)?.translate('pecp'),
-                  ),
-                  const SizedBox(height: dimension25),
-                  ElevatedButtonWidget(
-                    key: const Key("buttonKey"),
-                    width: double.infinity,
-                    title: AppLocalization.of(context)?.translate('signIn'),
-                    height: dimension42,
-                    bTitleBold: true,
-                    onClick: isPopulated
-                        ? () {
-                      context.replaceRoute(const Login());
-                    }
-                        : null,
-                    bgColor: (appTheme == Brightness.dark)
-                        ? buttonBgColor
-                        : buttonDarkBgColor,
-                    textColor: (appTheme == Brightness.dark)
-                        ? buttonDarkTextColor
-                        : buttonTextColor,
-                    disabledBgColor: (appTheme == Brightness.dark)
-                        ? disabledDarkBgColor
-                        : disabledBgColor,
-                    disabledTextColor: (appTheme == Brightness.dark)
-                        ? disabledTextDarkColor
-                        : disabledTextColor,
-                    bTitleS: true,
-                    borderRadius: dimension5,
-                  ),
-                  const SizedBox(
-                    height: dimension10,
-                  ),
-                  buildSignUpText()
-                ],
-              )
-            ),
+                )),
           ),
         ),
       ),

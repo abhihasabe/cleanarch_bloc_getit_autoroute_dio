@@ -14,8 +14,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 class LoginWidget extends StatefulWidget {
-  LoginWidget({Key? key, this.state}) : super(key: key);
-  AuthenticationState? state;
+  const LoginWidget({Key? key, this.state}) : super(key: key);
+  final AuthenticationState? state;
 
   @override
   State<LoginWidget> createState() => _LoginWidgetState();
@@ -25,6 +25,8 @@ class _LoginWidgetState extends State<LoginWidget> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   dynamic appTheme;
+
+  String? email, password;
 
   bool get isPopulated =>
       _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
@@ -107,12 +109,15 @@ class _LoginWidgetState extends State<LoginWidget> {
                         Icons.email,
                         color: hoverColorDarkColor,
                       ),
-                      errorMessage: widget.state!.email.invalid
+                      errorMessage: widget.state!.email.isNotValid
                           ? AppLocalization.of(context)?.translate('pee')
                           : null,
-                      onChange: (name) => context
-                          .read<AuthenticationBloc>()
-                          .add(EmailChanged(name)),
+                      onChange: (email) {
+                        this.email = email;
+                        context
+                            .read<AuthenticationBloc>()
+                            .add(EmailChanged(email: email));
+                      },
                       parametersValidate:
                           AppLocalization.of(context)?.translate('pee'),
                     ),
@@ -132,12 +137,15 @@ class _LoginWidgetState extends State<LoginWidget> {
                           color: hoverColorDarkColor),
                       prefixIcon:
                           const Icon(Icons.lock, color: hoverColorDarkColor),
-                      errorMessage: widget.state!.password.invalid
+                      errorMessage: widget.state!.password.isNotValid
                           ? AppLocalization.of(context)?.translate('pep')
                           : null,
-                      onChange: (password) => context
-                          .read<AuthenticationBloc>()
-                          .add(PasswordChanged(password)),
+                      onChange: (password) {
+                        this.password = password;
+                        context
+                            .read<AuthenticationBloc>()
+                            .add(PasswordChanged(password: password));
+                      },
                       parametersValidate:
                           AppLocalization.of(context)?.translate('pep'),
                     ),
@@ -150,9 +158,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                       bTitleBold: true,
                       onClick: isPopulated
                           ? () {
-                              context
-                                  .read<AuthenticationBloc>()
-                                  .add(const LoggedIn());
+                              context.read<AuthenticationBloc>().add(
+                                  LoggedIn(email: email!, password: password!));
                             }
                           : null,
                       bgColor: (appTheme == Brightness.dark)

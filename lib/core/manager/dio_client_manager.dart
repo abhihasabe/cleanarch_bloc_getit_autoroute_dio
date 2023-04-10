@@ -1,8 +1,9 @@
 import 'package:bloc_clean/core/errors/http/http_error.dart';
+import 'package:bloc_clean/core/errors/error_model.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
-abstract class DioClient {
+abstract class DioClientManager {
   Future<dynamic> request({
     required String url,
     required RequestMethod method,
@@ -13,10 +14,10 @@ abstract class DioClient {
   });
 }
 
-class DioClientManager implements DioClient {
+class DioClientManagerImpl implements DioClientManager {
   final Dio client;
 
-  DioClientManager({
+  DioClientManagerImpl({
     required this.client,
   });
 
@@ -60,16 +61,16 @@ class DioClientManager implements DioClient {
         url: url,
         queryParameters: queryParameters,
         options: Options(
-          headers: defaultHeaders,
-          followRedirects: false,
-          validateStatus: (status) {
-            return status! < 500;
-          }
-        ),
+            headers: defaultHeaders,
+            followRedirects: false,
+            validateStatus: (status) {
+              return status! < 500;
+            }),
         formData: formData,
         body: body,
       );
-      final response = await futureResponse.timeout(const Duration(seconds: 5));
+      final response =
+          await futureResponse.timeout(const Duration(seconds: 12));
       return _handleResponse(response);
     } on DioError catch (error) {
       debugPrint(error.toString());
@@ -92,6 +93,9 @@ class DioClientManager implements DioClient {
     FormData? formData,
     Map<String, dynamic> body = const {},
   }) {
+    print("url: $url");
+    print("method: $method");
+    print("body: $body");
     if (method == RequestMethod.get) {
       return client.get(url,
           queryParameters: queryParameters, options: options);
@@ -111,12 +115,14 @@ class DioClientManager implements DioClient {
   }
 
   dynamic _handleResponse(Response response) {
+    print("response: $response");
     if (response.statusCode == 200 || response.statusCode == 201) {
       return response.data;
     } else if (response.statusCode == 204) {
       return {};
     } else if (response.statusCode == 400) {
-      throw HttpError.badRequest();
+      throw HttpError.badRequest(
+          message: ErrorModel.fromJson(response.data).message.toString());
     } else if (response.statusCode == 401) {
       throw HttpError.unauthorized();
     } else if (response.statusCode == 403) {

@@ -1,38 +1,47 @@
+import 'package:bloc_clean/core/validations/confirm_password_validation.dart';
 import 'package:bloc_clean/core/validations/number_validation_dart.dart';
 import 'package:bloc_clean/core/validations/password_validation.dart';
 import 'package:bloc_clean/core/validations/email_validation.dart';
 import 'package:bloc_clean/core/validations/name_validation.dart';
-import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 
-class AuthenticationState extends Equatable{
+class AuthenticationState with FormzMixin {
   final Name username;
-  final Password password;
   final Email email;
   final Number phoneNo;
-  final FormzStatus status;
+  final Password password;
+  final ConfirmPassword confirmPassword;
+  final FormzSubmissionStatus status;
+  final Object outPut;
 
   const AuthenticationState(
       {this.username = const Name.pure(),
-      this.password = const Password.pure(),
       this.email = const Email.pure(),
       this.phoneNo = const Number.pure(),
-      this.status = FormzStatus.pure});
+      this.password = const Password.pure(),
+      this.confirmPassword = const ConfirmPassword.pure(),
+      this.status = FormzSubmissionStatus.initial,
+      this.outPut = ""});
 
   AuthenticationState copyWith(
       {Name? username,
-      Password? password,
       Email? email,
+      Password? password,
+      ConfirmPassword? confirmPassword,
       Number? phoneNo,
-      FormzStatus? status}) {
+      FormzSubmissionStatus? status,
+      Object? outPut}) {
     return AuthenticationState(
         username: username ?? this.username,
-        password: password ?? this.password,
         email: email ?? this.email,
         phoneNo: phoneNo ?? this.phoneNo,
-        status: status ?? this.status);
+        password: password ?? this.password,
+        confirmPassword: confirmPassword ?? this.confirmPassword,
+        status: status ?? this.status,
+        outPut: outPut ?? this.outPut);
   }
 
   @override
-  List<Object> get props => [username, password, phoneNo, email, status];
+  List<FormzInput<dynamic, dynamic>> get inputs =>
+      [username, email, phoneNo, password, confirmPassword];
 }

@@ -8,52 +8,55 @@ abstract class AuthenticationEvent extends Equatable {
 }
 
 class UsernameChanged extends AuthenticationEvent {
-  final String username;
+  const UsernameChanged({required this.username});
 
-  const UsernameChanged(this.username);
+  final String username;
 
   @override
   List<Object> get props => [username];
 }
 
 class EmailChanged extends AuthenticationEvent {
-  final String email;
+  const EmailChanged({required this.email});
 
-  const EmailChanged(this.email);
+  final String email;
 
   @override
   List<Object> get props => [email];
 }
 
 class PhoneNoChanged extends AuthenticationEvent {
-  final String phoneNo;
+  const PhoneNoChanged({required this.phoneNo});
 
-  const PhoneNoChanged(this.phoneNo);
+  final String phoneNo;
 
   @override
   List<Object> get props => [phoneNo];
 }
 
 class PasswordChanged extends AuthenticationEvent {
-  final String password;
+  const PasswordChanged({required this.password});
 
-  const PasswordChanged(this.password);
+  final String password;
 
   @override
   List<Object> get props => [password];
 }
 
 class ConfirmPasswordChanged extends AuthenticationEvent {
-  final String password;
+  const ConfirmPasswordChanged({required this.confirmPassword});
 
-  const ConfirmPasswordChanged(this.password);
+  final String confirmPassword;
 
   @override
-  List<Object> get props => [password];
+  List<Object> get props => [confirmPassword];
 }
 
 class LoggedIn extends AuthenticationEvent {
-  const LoggedIn();
+  const LoggedIn({required this.email, required this.password});
+
+  final String email;
+  final String password;
 }
 
 class RegistrationState extends AuthenticationEvent {

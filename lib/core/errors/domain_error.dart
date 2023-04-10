@@ -1,5 +1,5 @@
-abstract class Failure {
+abstract class DomainError {
   final String message;
 
-  const Failure({this.message = ''});
+  const DomainError({this.message = ''});
 }

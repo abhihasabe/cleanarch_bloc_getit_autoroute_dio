@@ -23,7 +23,7 @@ dependencies:
   equatable: ^2.0.5
   get_it: ^7.2.0
   dartz: ^0.10.1
-  formz: ^0.4.1
+  formz: ^0.6.0
   intl: ^0.17.0
   dio: ^5.1.1
 

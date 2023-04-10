@@ -17,9 +17,11 @@ class Number extends FormzInput<String, NumberValidationError> {
 
   @override
   NumberValidationError? validator(String value) {
-    return _numberRegExp.hasMatch(value)
+    return value.isEmpty
         ? null
-        : value.isNotEmpty == true && value.length >= 10
+        : value.isNotEmpty == true &&
+                value.length >= 10 &&
+                _numberRegExp.hasMatch(value)
             ? null
             : NumberValidationError.invalid;
   }

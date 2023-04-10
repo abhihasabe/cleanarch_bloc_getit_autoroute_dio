@@ -1,6 +1,7 @@
-import 'package:bloc_clean/core/errors/domain_error.dart';
+
+import 'package:bloc_clean/core/errors/failure.dart';
 import 'package:equatable/equatable.dart';
-import 'package:dartz/dartz.dart';
+import 'package:either_dart/either.dart';
 
 abstract class UseCaseNoInput<Output> {
   Future<Either<Failure, Output>> invoke();

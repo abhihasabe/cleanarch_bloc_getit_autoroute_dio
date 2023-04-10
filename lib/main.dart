@@ -4,6 +4,7 @@ import 'package:bloc_clean/core/localization/bloc/language_bloc.dart';
 import 'package:bloc_clean/core/localization/app_localization.dart';
 import 'package:bloc_clean/core/theme/app_theme.dart';
 import 'package:bloc_clean/src/features/authentication/presentation/bloc/authentication_bloc.dart';
+import 'package:bloc_clean/src/features/home/presentation/bloc/home_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:bloc_clean/di/injection.dart' as di;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,8 +30,10 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => LanguageBloc()..add(GetThemeAndLang())),
+        BlocProvider(
+            create: (context) => LanguageBloc()..add(GetThemeAndLang())),
         BlocProvider(create: (context) => AuthenticationBloc()),
+        BlocProvider(create: (context) => HomeBloc()),
       ],
       child:
           BlocBuilder<LanguageBloc, LanguageState>(builder: (context, state) {

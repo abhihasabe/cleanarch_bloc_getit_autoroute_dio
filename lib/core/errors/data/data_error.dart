@@ -1,6 +1,6 @@
 import 'package:bloc_clean/core/errors/domain_error.dart';
 
-abstract class DataError extends Failure {
+abstract class DataError extends DomainError {
   const DataError._({String message = ''}) : super(message: message);
 
   factory DataError.failedToConvert({String message = ''}) => _FailedToConvert(message: message);
